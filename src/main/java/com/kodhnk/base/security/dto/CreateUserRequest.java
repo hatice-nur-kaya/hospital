@@ -10,6 +10,7 @@ public record CreateUserRequest(
         String email,
         String username,
         String password,
+        String userType,
         Role authorities
 ) {
 }

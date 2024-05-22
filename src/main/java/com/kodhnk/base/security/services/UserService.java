@@ -42,6 +42,7 @@ public class UserService implements UserDetailsService {
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .role(request.authorities())
+                .userType(request.userType())
                 .build();
         return userRepository.save(newUser);
     }
