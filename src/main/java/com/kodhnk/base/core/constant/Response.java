@@ -23,7 +23,9 @@ public enum Response {
     UNAUTHORIZED("Unauthorized"),
     FORBIDDEN("Forbidden"),
     BAD_REQUEST("Bad Request"),
-    INTERNAL_SERVER_ERROR("Internal Server Error");
+    INTERNAL_SERVER_ERROR("Internal Server Error"),
+    GETALL_PATIENT("Hastalar Listelendi."),
+    PATIENT_NOT_FOUND("Patient Not Found"),;
 
     private final String message;
 
