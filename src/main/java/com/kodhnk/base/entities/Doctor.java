@@ -26,8 +26,4 @@ public class Doctor extends User {
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 }
