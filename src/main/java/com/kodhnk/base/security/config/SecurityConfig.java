@@ -20,8 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.kodhnk.base.entities.enums.Permission.*;
-import static com.kodhnk.base.entities.enums.Role.ADMIN;
+
 
 @Configuration
 @EnableWebSecurity
@@ -41,32 +40,6 @@ public class SecurityConfig {
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
 
                 )
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                // Belirtilen URL'lere göre rolleri kontrol etme
-                                .requestMatchers("/api/v1/management/**").hasAnyRole(ADMIN.name())
-                                // Belirtilen URL'lere göre GET istekleri için yetkileri kontrol etme
-                                .requestMatchers(HttpMethod.GET, "/api/v1/management/**").hasAnyAuthority(ADMIN_READ.name())
-                                // Belirtilen URL'lere göre POST istekleri için yetkileri kontrol etme
-                                .requestMatchers(HttpMethod.POST, "/api/v1/management/**").hasAnyAuthority(ADMIN_CREATE.name())
-                                // Belirtilen URL'lere göre PUT istekleri için yetkileri kontrol etme
-                                .requestMatchers(HttpMethod.PUT, "/api/v1/management/**").hasAnyAuthority(ADMIN_UPDATE.name())
-                                // Belirtilen URL'lere göre DELETE istekleri için yetkileri kontrol etme
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/management/**").hasAnyAuthority(ADMIN_DELETE.name())
-
-                                .requestMatchers("/api/v1/admin/**").hasAnyRole(ADMIN.name())
-                                // Belirtilen URL'lere göre GET istekleri için yetkileri kontrol etme
-                                .requestMatchers(HttpMethod.GET, "/api/v1/admin/**").hasAnyAuthority(ADMIN_READ.name())
-                                // Belirtilen URL'lere göre POST istekleri için yetkileri kontrol etme
-                                .requestMatchers(HttpMethod.POST, "/api/v1/admin/**").hasAnyAuthority(ADMIN_CREATE.name())
-                                // Belirtilen URL'lere göre PUT istekleri için yetkileri kontrol etme
-                                .requestMatchers(HttpMethod.PUT, "/api/v1/admin/**").hasAnyAuthority(ADMIN_UPDATE.name())
-                                // Belirtilen URL'lere göre DELETE istekleri için yetkileri kontrol etme
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/admin/**").hasAnyAuthority(ADMIN_DELETE.name())
-                                // Diğer tüm istekleri oturum açmış kullanıcılara izin verme
-                                .anyRequest().authenticated()
-                )
-
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

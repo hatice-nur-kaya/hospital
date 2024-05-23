@@ -1,4 +1,4 @@
-package com.kodhnk.base.openApi;
+package com.kodhnk.base.config.openApi;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
