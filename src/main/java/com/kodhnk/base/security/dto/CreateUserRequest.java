@@ -1,6 +1,5 @@
 package com.kodhnk.base.security.dto;
 
-import com.kodhnk.base.entities.enums.Role;
 import lombok.Builder;
 
 @Builder
