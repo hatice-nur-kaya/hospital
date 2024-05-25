@@ -5,12 +5,12 @@ import com.kodhnk.base.core.utilities.Result;
 import com.kodhnk.base.dto.patients.CreatePatientRequest;
 import com.kodhnk.base.dto.patients.UpdatePatientRequest;
 import com.kodhnk.base.entities.Patient;
-import com.kodhnk.base.services.concretes.PatientService;
 import com.kodhnk.base.services.interfaces.IPatientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/patients")
@@ -22,14 +22,14 @@ public class PatientController {
     }
 
     @GetMapping("/getAllPatients")
-    public ResponseEntity<DataResult<List<Patient>>> getAllPatients(@RequestParam Long hospitalId) {
-        DataResult<List<Patient>> result = patientService.getAllPatients(hospitalId);
+    public ResponseEntity<DataResult<Set<Patient>>> getAllPatients(@RequestParam Long hospitalId) {
+        DataResult<Set<Patient>> result = patientService.getAllPatients(hospitalId);
         return ResponseEntity.status(result.getStatusCode()).body(result);
     }
 
     @GetMapping("/getByPatientId")
-    public ResponseEntity<DataResult<List<Patient>>> getByPatientId(@RequestParam Long hospitalId) {
-        DataResult<List<Patient>> result = patientService.getByPatientId(hospitalId);
+    public ResponseEntity<DataResult<Patient>> getByPatientId(@RequestParam Long hospitalId) {
+        DataResult<Patient> result = patientService.getByPatientId(hospitalId);
         return ResponseEntity.status(result.getStatusCode()).body(result);
     }
 

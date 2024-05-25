@@ -9,4 +9,5 @@ public class CreatePatientRequest {
     private String name;
     private String surname;
     private String phone;
+    private Long hospitalId;
 }

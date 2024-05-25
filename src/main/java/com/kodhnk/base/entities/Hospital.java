@@ -24,4 +24,7 @@ public class Hospital {
 
     @OneToMany
     private List<Doctor> doctors;
+
+    @OneToMany
+    private List<Patient> patients;
 }

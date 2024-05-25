@@ -35,7 +35,10 @@ public enum Response {
     CREATE_DEPARTMENT("Departman Eklendi."), UPDATE_DEPARTMENT("Departman Güncellendi."), DELETE_DEPARTMENT("Departman Silindi."),
     HOSPITAL_GET_ALL("Hastaneler Listelendi."), HOSPITAL_BY_ID("Hastane Getirildi"),
     DELETE_HOSPITAL("Hastane Silindi."), UPDATE_HOSPITAL("Hastane Güncellendi."), CREATE_HOSPITAL("Hastane Eklendi."), 
-    CREATE_DOCTOR("Doktor Eklendi."), UPDATE_DOCTOR("Doktor Güncellend.");
+    CREATE_DOCTOR("Doktor Eklendi."), UPDATE_DOCTOR("Doktor Güncellend."),
+    GET_PATIENT("Hasta Getirildi."), CREATE_PATIENT("Hasta Eklendi."),
+    DELETE_PATIENT("Hasta Silindi."), UPDATE_PATIENT("Hasta Bilgileri Güncellendi.");
+    
 
     private final String message;
 

@@ -19,4 +19,7 @@ public class Patient extends User {
     private String name;
     private String surname;
     private String phone;
+    @ManyToOne
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospital;
 }
