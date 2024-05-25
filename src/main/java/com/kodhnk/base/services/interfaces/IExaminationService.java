@@ -1,4 +1,4 @@
 package com.kodhnk.base.services.interfaces;
 
-public interface IUserService {
+public interface IExaminationService {
 }

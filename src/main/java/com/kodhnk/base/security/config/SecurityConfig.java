@@ -21,7 +21,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -38,7 +37,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(x ->
                         x.requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-
+                                .requestMatchers("/api/v1/departments/**").permitAll()
+                                .requestMatchers("/api/v1/doctors/**").permitAll()
+                                .requestMatchers("/api/v1/patients/**").permitAll()
+                                .requestMatchers("/api/v1/hospitals/**").permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

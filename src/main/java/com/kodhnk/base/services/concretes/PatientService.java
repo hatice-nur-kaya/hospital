@@ -1,6 +1,5 @@
 package com.kodhnk.base.services.concretes;
 
-import com.kodhnk.base.core.constant.Response;
 import com.kodhnk.base.core.utilities.*;
 import com.kodhnk.base.dataAccess.PatientRepository;
 import com.kodhnk.base.entities.Patient;

@@ -25,7 +25,17 @@ public enum Response {
     BAD_REQUEST("Bad Request"),
     INTERNAL_SERVER_ERROR("Internal Server Error"),
     GETALL_PATIENT("Hastalar Listelendi."),
-    PATIENT_NOT_FOUND("Patient Not Found"),;
+    PATIENT_NOT_FOUND("Patient Not Found"),
+    User_LIST("Kullanıcılar Listelendi"),
+    USER_NOT_FOUND("Kullanıcı Listelenemedi."),
+    DOCTOR_NOT_FOUND("Doctor Not Found"),
+    GET_DOCTOR("Doktorlar Listelendi."), HOSPITAL_NOT_FOUND("Hastane bulunamadı"), DELETE_DOCTOR("Doktor Silindi."), 
+    DEPARTMENT_LISTED("Departmanlar Listelendi."), 
+    DEPARTMENT_FOUND("Departman bulundu."), DEPARTMENT_NOT_FOUND("Departman bulunamadı."), 
+    CREATE_DEPARTMENT("Departman Eklendi."), UPDATE_DEPARTMENT("Departman Güncellendi."), DELETE_DEPARTMENT("Departman Silindi."),
+    HOSPITAL_GET_ALL("Hastaneler Listelendi."), HOSPITAL_BY_ID("Hastane Getirildi"),
+    DELETE_HOSPITAL("Hastane Silindi."), UPDATE_HOSPITAL("Hastane Güncellendi."), CREATE_HOSPITAL("Hastane Eklendi."), 
+    CREATE_DOCTOR("Doktor Eklendi."), UPDATE_DOCTOR("Doktor Güncellend.");
 
     private final String message;
 

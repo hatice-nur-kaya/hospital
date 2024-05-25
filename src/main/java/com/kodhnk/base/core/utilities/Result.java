@@ -5,10 +5,10 @@ import com.kodhnk.base.core.constant.Response;
 
 public class Result {
     private boolean success;
-    private Response message;
+    private String message;
     private int statusCode;
 
-    public Result(boolean success, Response message, int statusCode) {
+    public Result(boolean success, String message, int statusCode) {
         this.success = success;
         this.message = message;
         this.statusCode = statusCode;
@@ -18,7 +18,7 @@ public class Result {
         return this.success;
     }
 
-    public Response getMessage() {
+    public String getMessage() {
         return this.message;
     }
 
