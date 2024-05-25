@@ -5,14 +5,11 @@ import com.kodhnk.base.core.utilities.*;
 import com.kodhnk.base.dataAccess.DoctorRepository;
 import com.kodhnk.base.dto.doctors.CreateDoctorRequest;
 import com.kodhnk.base.dto.doctors.UpdateDoctorRequest;
-import com.kodhnk.base.entities.Department;
-import com.kodhnk.base.entities.Doctor;
-import com.kodhnk.base.entities.Hospital;
-import com.kodhnk.base.services.interfaces.IDepartmentService;
-import com.kodhnk.base.services.interfaces.IDoctorService;
-import com.kodhnk.base.services.interfaces.IHospitalService;
+import com.kodhnk.base.entities.*;
+import com.kodhnk.base.services.interfaces.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -25,11 +22,17 @@ public class DoctorService implements IDoctorService {
     private final DoctorRepository doctorRepository;
     private final IHospitalService hospitalService;
     private final IDepartmentService departmentService;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final IExaminationService examinationService;
+    private final IAppointmentService appointmentService;
 
-    public DoctorService(DoctorRepository doctorRepository, IHospitalService hospitalService, IDepartmentService departmentService) {
+    public DoctorService(DoctorRepository doctorRepository, IHospitalService hospitalService, IDepartmentService departmentService, BCryptPasswordEncoder passwordEncoder, IExaminationService examinationService, IAppointmentService appointmentService) {
         this.doctorRepository = doctorRepository;
         this.hospitalService = hospitalService;
         this.departmentService = departmentService;
+        this.passwordEncoder = passwordEncoder;
+        this.examinationService = examinationService;
+        this.appointmentService = appointmentService;
     }
 
     @Override
@@ -67,7 +70,10 @@ public class DoctorService implements IDoctorService {
             return new ErrorDataResult<>(Response.DEPARTMENT_NOT_FOUND.getMessage(), null, 400);
         }
         doctor.setDepartment(departmentDataResult.getData());
-        BeanUtils.copyProperties(request, doctor);
+        doctor.setFirstname(request.getFirstname());
+        doctor.setLastname(request.getLastname());
+        doctor.setEmail(request.getEmail());
+        doctor.setPassword(passwordEncoder.encode(request.getPassword()));
         doctorRepository.save(doctor);
         return new SuccessDataResult<>(Response.CREATE_DOCTOR.getMessage(), doctor, 201);
     }
@@ -79,7 +85,10 @@ public class DoctorService implements IDoctorService {
             return new ErrorDataResult<>(Response.DOCTOR_NOT_FOUND.getMessage(), null, 400);
         }
         Doctor doctor = doctorDataResult.getData();
-        BeanUtils.copyProperties(request, doctor);
+        doctor.setFirstname(request.getFirstname());
+        doctor.setLastname(request.getLastname());
+        doctor.setEmail(request.getEmail());
+        doctor.setPassword(passwordEncoder.encode(request.getPassword()));
         doctorRepository.save(doctor);
         return new SuccessDataResult<>(Response.UPDATE_DOCTOR.getMessage(), doctor, 200);
     }

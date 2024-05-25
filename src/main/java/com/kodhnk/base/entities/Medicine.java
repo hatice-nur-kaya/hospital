@@ -6,25 +6,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "medicines")
 @Entity
-@Table(name = "hospitals")
-public class Hospital {
+public class Medicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String city;
-    private String district;
-
-    @OneToMany(mappedBy = "hospital")
-    private List<Doctor> doctors;
-
-    @OneToMany(mappedBy = "hospital")
-    private List<Patient> patients;
+    private String medicineName;
+    private String dosage;
+    private String instructions;
 }

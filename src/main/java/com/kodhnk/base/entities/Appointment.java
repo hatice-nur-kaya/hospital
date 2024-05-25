@@ -28,8 +28,4 @@ public class Appointment {
     private Doctor doctor;
 
     private Date appointmentDate;
-
-    private String status;
-
-    private String reason;
 }

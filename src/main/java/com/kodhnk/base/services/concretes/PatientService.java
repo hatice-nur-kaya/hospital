@@ -11,6 +11,7 @@ import com.kodhnk.base.services.interfaces.IHospitalService;
 import com.kodhnk.base.services.interfaces.IPatientService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -23,10 +24,12 @@ import java.util.stream.Collectors;
 public class PatientService implements IPatientService {
     private final PatientRepository patientRepository;
     private final IHospitalService hospitalService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public PatientService(PatientRepository patientRepository, IHospitalService hospitalService) {
+    public PatientService(PatientRepository patientRepository, IHospitalService hospitalService, BCryptPasswordEncoder passwordEncoder) {
         this.patientRepository = patientRepository;
         this.hospitalService = hospitalService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -59,7 +62,13 @@ public class PatientService implements IPatientService {
             return new ErrorDataResult<>(Response.HOSPITAL_NOT_FOUND.getMessage(), null, 400);
         }
         patient.setHospital(hospitalDataResult.getData());
-        BeanUtils.copyProperties(request, patient);
+        patient.setFirstname(request.getFirstname());
+        patient.setLastname(request.getLastname());
+        patient.setEmail(request.getEmail());
+        patient.setPhone(request.getPhone());
+        patient.setUsername(request.getUsername());
+        patient.setPassword(passwordEncoder.encode(request.getPassword()));
+        patient.setBirthDate(request.getBirthDate());
         patientRepository.save(patient);
         return new SuccessDataResult<>(Response.CREATE_PATIENT.getMessage(), patient, 201);
     }

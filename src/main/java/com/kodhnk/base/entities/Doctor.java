@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,8 +18,7 @@ public class Doctor extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String speciality;
+    private String specialty;
 
     @ManyToOne
     @JoinColumn(name = "hospital_id")
@@ -26,4 +27,7 @@ public class Doctor extends User {
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
+
+    @OneToMany(mappedBy = "doctor")
+    private List<Appointment> appointments;
 }

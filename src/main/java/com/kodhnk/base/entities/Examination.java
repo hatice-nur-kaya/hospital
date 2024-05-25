@@ -12,11 +12,11 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "examinations")
 @Entity
+@Table(name = "examinations")
 public class Examination {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // AUTO yerine IDENTITY kullanmanız daha uygun olabilir.
     private long id;
 
     @ManyToOne
@@ -28,10 +28,7 @@ public class Examination {
     private Doctor doctor;
 
     private Date examinationDate;
-
     private String diagnosis;
-
     private String treatment;
-
     private String notes;
 }

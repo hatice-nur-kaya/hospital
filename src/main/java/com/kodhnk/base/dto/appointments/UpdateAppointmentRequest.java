@@ -11,6 +11,4 @@ public class UpdateAppointmentRequest {
     private Long patientId;
     private Long doctorId;
     private Date appointmentDate;
-    private String status;
-    private String reason;
 }
