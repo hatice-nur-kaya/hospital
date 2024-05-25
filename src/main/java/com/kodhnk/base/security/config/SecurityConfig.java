@@ -40,6 +40,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/doctors/**").permitAll()
                                 .requestMatchers("/api/v1/patients/**").permitAll()
                                 .requestMatchers("/api/v1/hospitals/**").permitAll()
+                                .requestMatchers("/api/v1/departments/").permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

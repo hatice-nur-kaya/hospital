@@ -14,6 +14,4 @@ public class CreateDoctorRequest {
     private String speciality;
     private Long hospitalId;
     private Long departmentId;
-    private Long examinationId;
-    private Long appointmentId;
 }

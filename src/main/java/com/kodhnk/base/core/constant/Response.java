@@ -56,7 +56,11 @@ public enum Response {
     MEDICINE_UPDATED("İlaç Güncellendi"),
     MEDICINE_DELETED("İlaç Silindi"),
     MEDICINE_NOT_FOUND("İlaç Bulunamadı"),
-    MEDICINE_FOUND("İlaç Getirildi.");
+    MEDICINE_FOUND("İlaç Getirildi."),
+    CREATE_APPOINTMENT("Randevu Eklendi."),
+    INVALID_PATIENT_OR_DOCTOR("Doktor veya Hasta Bulunamadı."),
+    APPOINTMENT_DELETE("Randevu Silindi."),
+    APPOINTMENT_UPDATE("Randevu Güncellendi.");
 
     private final String message;
 
