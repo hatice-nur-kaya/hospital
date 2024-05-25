@@ -5,8 +5,10 @@ import com.kodhnk.base.core.utilities.*;
 import com.kodhnk.base.dataAccess.DoctorRepository;
 import com.kodhnk.base.dto.doctors.CreateDoctorRequest;
 import com.kodhnk.base.dto.doctors.UpdateDoctorRequest;
+import com.kodhnk.base.entities.Department;
 import com.kodhnk.base.entities.Doctor;
 import com.kodhnk.base.entities.Hospital;
+import com.kodhnk.base.services.interfaces.IDepartmentService;
 import com.kodhnk.base.services.interfaces.IDoctorService;
 import com.kodhnk.base.services.interfaces.IHospitalService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +24,12 @@ import java.util.stream.Collectors;
 public class DoctorService implements IDoctorService {
     private final DoctorRepository doctorRepository;
     private final IHospitalService hospitalService;
+    private final IDepartmentService departmentService;
 
-    public DoctorService(DoctorRepository doctorRepository, IHospitalService hospitalService) {
+    public DoctorService(DoctorRepository doctorRepository, IHospitalService hospitalService, IDepartmentService departmentService) {
         this.doctorRepository = doctorRepository;
         this.hospitalService = hospitalService;
+        this.departmentService = departmentService;
     }
 
     @Override
@@ -53,6 +57,16 @@ public class DoctorService implements IDoctorService {
     @Override
     public Result createHospitalDoctor(CreateDoctorRequest request) {
         Doctor doctor = new Doctor();
+        DataResult<Hospital> hospitalDataResult = hospitalService.getById(request.getHospitalId());
+        if (!hospitalDataResult.isSuccess()) {
+            return new ErrorDataResult<>(Response.HOSPITAL_NOT_FOUND.getMessage(), null, 400);
+        }
+        doctor.setHospital(hospitalDataResult.getData());
+        DataResult<Department> departmentDataResult = departmentService.getDepartmentById(request.getDepartmentId());
+        if (!departmentDataResult.isSuccess()) {
+            return new ErrorDataResult<>(Response.DEPARTMENT_NOT_FOUND.getMessage(), null, 400);
+        }
+        doctor.setDepartment(departmentDataResult.getData());
         BeanUtils.copyProperties(request, doctor);
         doctorRepository.save(doctor);
         return new SuccessDataResult<>(Response.CREATE_DOCTOR.getMessage(), doctor, 201);
