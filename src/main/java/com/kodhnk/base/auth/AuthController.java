@@ -34,23 +34,23 @@ public class AuthController {
     private final JwtService jwtService;
     private final UserRepository repository;
 
-    @PostMapping("/register")
-    public ResponseEntity<?> addUser(@RequestBody CreateUserRequest request) {
-        try {
-            User user = userService.createUser(request);
-            var jwtToken = jwtService.generateToken(user.getUsername());
-            return ResponseEntity.ok(new AuthenticationResponse(jwtToken));
-        } catch (UserAlreadyExistsException e) {
-            log.error("Kullanıcı zaten mevcut: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Bu kullanıcı adı zaten kullanılıyor.");
-        } catch (UnexpectedErrorException e) {
-            log.error("İşlem sırasında beklenmeyen bir hata oluştu: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("İşlem sırasında bir hata oluştu.");
-        } catch (Exception e) {
-            log.error("Genel hata: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Beklenmeyen bir hata oluştu.");
-        }
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<?> addUser(@RequestBody CreateUserRequest request) {
+//        try {
+//            User user = userService.createUser(request);
+//            var jwtToken = jwtService.generateToken(user.getUsername());
+//            return ResponseEntity.ok(new AuthenticationResponse(jwtToken));
+//        } catch (UserAlreadyExistsException e) {
+//            log.error("Kullanıcı zaten mevcut: {}", e.getMessage());
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body("Bu kullanıcı adı zaten kullanılıyor.");
+//        } catch (UnexpectedErrorException e) {
+//            log.error("İşlem sırasında beklenmeyen bir hata oluştu: {}", e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("İşlem sırasında bir hata oluştu.");
+//        } catch (Exception e) {
+//            log.error("Genel hata: {}", e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Beklenmeyen bir hata oluştu.");
+//        }
+//    }
 
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
