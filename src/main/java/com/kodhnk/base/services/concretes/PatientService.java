@@ -10,7 +10,6 @@ import com.kodhnk.base.entities.Patient;
 import com.kodhnk.base.entities.UserType;
 import com.kodhnk.base.services.interfaces.IHospitalService;
 import com.kodhnk.base.services.interfaces.IPatientService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -97,10 +96,11 @@ public class PatientService implements IPatientService {
     @Override
     public Result deletePatient(Long id) {
         DataResult<Patient> patientDataResult = getByPatientId(id);
-        if (patientDataResult.isSuccess()) {
+        if (!patientDataResult.isSuccess()) {
             return new ErrorDataResult<>(Response.PATIENT_NOT_FOUND.getMessage(), null, 400);
         }
-        patientRepository.deleteById(id);
-        return new SuccessDataResult<>(Response.DELETE_PATIENT.getMessage(), null, 400);
+        Patient patient = patientDataResult.getData();
+        patientRepository.delete(patient);
+        return new SuccessDataResult<>(Response.DELETE_PATIENT.getMessage(), patient, 200);
     }
 }
