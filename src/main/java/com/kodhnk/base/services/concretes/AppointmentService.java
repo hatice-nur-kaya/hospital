@@ -4,14 +4,15 @@ import com.kodhnk.base.core.constant.Response;
 import com.kodhnk.base.core.utilities.*;
 import com.kodhnk.base.dataAccess.AppointmentRepository;
 import com.kodhnk.base.dataAccess.DoctorRepository;
+import com.kodhnk.base.dataAccess.HospitalRepository;
 import com.kodhnk.base.dataAccess.PatientRepository;
 import com.kodhnk.base.dto.appointments.CreateAppointmentRequest;
 import com.kodhnk.base.dto.appointments.UpdateAppointmentRequest;
-import com.kodhnk.base.entities.Appointment;
-import com.kodhnk.base.entities.AppointmentStatus;
-import com.kodhnk.base.entities.Doctor;
-import com.kodhnk.base.entities.Patient;
+import com.kodhnk.base.entities.*;
 import com.kodhnk.base.services.interfaces.IAppointmentService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,11 +22,13 @@ import java.util.Optional;
 public class AppointmentService implements IAppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final DoctorRepository doctorRepository;
+    private final HospitalRepository hospitalRepository;
     private final PatientRepository patientRepository;
 
-    public AppointmentService(AppointmentRepository appointmentRepository, DoctorRepository doctorRepository, PatientRepository patientRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, DoctorRepository doctorRepository, HospitalRepository hospitalRepository, PatientRepository patientRepository) {
         this.appointmentRepository = appointmentRepository;
         this.doctorRepository = doctorRepository;
+        this.hospitalRepository = hospitalRepository;
         this.patientRepository = patientRepository;
     }
 
@@ -46,22 +49,34 @@ public class AppointmentService implements IAppointmentService {
 
     @Override
     public DataResult<Appointment> createAppointment(CreateAppointmentRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = null;
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            currentUsername = userDetails.getUsername();  // Kullanıcı adını al
+        }
+
         Optional<Patient> patient = patientRepository.findById(request.getPatientId());
         Optional<Doctor> doctor = doctorRepository.findById(request.getDoctorId());
+        Optional<Hospital> hospital = hospitalRepository.findById(request.getHospitalId());
 
-        if (!patient.isPresent() || !doctor.isPresent()) {
-            return new ErrorDataResult<>(Response.INVALID_PATIENT_OR_DOCTOR.getMessage(), null, 400);
+        if (!patient.isPresent() || !doctor.isPresent() || !hospital.isPresent()) {
+            return new ErrorDataResult<>(Response.INVALID_SELECTION.getMessage(), null, 400);
         }
+
+        System.out.println("Creating appointment for user: " + currentUsername);
 
         Appointment newAppointment = new Appointment();
         newAppointment.setPatient(patient.get());
         newAppointment.setDoctor(doctor.get());
+        newAppointment.setHospital(hospital.get());
         newAppointment.setAppointmentDate(request.getAppointmentDate());
         newAppointment.setStatus(AppointmentStatus.PLANNED);
 
         Appointment savedAppointment = appointmentRepository.save(newAppointment);
         return new SuccessDataResult<>(Response.CREATE_APPOINTMENT.getMessage(), savedAppointment, 201);
     }
+
 
     @Override
     public Result updateAppointment(UpdateAppointmentRequest request) {

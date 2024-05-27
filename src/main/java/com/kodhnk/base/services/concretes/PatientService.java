@@ -34,14 +34,13 @@ public class PatientService implements IPatientService {
 
     @Override
     public DataResult<Set<Patient>> getAllPatients(Long hospitalId) {
-        DataResult<Hospital> hospitalResult = hospitalService.getById(hospitalId);
-        if (hospitalResult.isSuccess()) {
-            Hospital hospital = hospitalResult.getData();
-            Set<Patient> patients = hospital.getPatients().stream().collect(Collectors.toSet());
-            return new SuccessDataResult<>(Response.GET_PATIENT.getMessage(), patients, 200);
-        } else {
-            return new ErrorDataResult<>(Response.PATIENT_NOT_FOUND.getMessage(), null, 400);
+        DataResult<Hospital> hospitalDataResult = hospitalService.getById(hospitalId);
+        if (!hospitalDataResult.isSuccess()) {
+            return new ErrorDataResult<>(Response.HOSPITAL_NOT_FOUND.getMessage(), null, 400);
         }
+        List<Patient> patients = patientRepository.findAllByHospital(hospitalDataResult.getData());
+        Set<Patient> patientSet = new HashSet<>(patients);
+        return new SuccessDataResult<>(Response.GET_PATIENT.getMessage(), patientSet, 200);
     }
 
     @Override
@@ -57,11 +56,6 @@ public class PatientService implements IPatientService {
     @Override
     public DataResult<Patient> createPatient(CreatePatientRequest request) {
         Patient patient = new Patient();
-        DataResult<Hospital> hospitalDataResult = hospitalService.getById(request.getHospitalId());
-        if (!hospitalDataResult.isSuccess()) {
-            return new ErrorDataResult<>(Response.HOSPITAL_NOT_FOUND.getMessage(), null, 400);
-        }
-        patient.setHospital(hospitalDataResult.getData());
         patient.setFirstname(request.getFirstname());
         patient.setLastname(request.getLastname());
         patient.setEmail(request.getEmail());

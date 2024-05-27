@@ -60,7 +60,8 @@ public enum Response {
     CREATE_APPOINTMENT("Randevu Eklendi."),
     INVALID_PATIENT_OR_DOCTOR("Doktor veya Hasta Bulunamadı."),
     APPOINTMENT_DELETE("Randevu Silindi."),
-    APPOINTMENT_UPDATE("Randevu Güncellendi.");
+    APPOINTMENT_UPDATE("Randevu Güncellendi."),
+    INVALID_SELECTION("Geçersiz Seçim");
 
     private final String message;
 

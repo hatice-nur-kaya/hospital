@@ -9,6 +9,9 @@ import java.util.Date;
 @Setter
 public class CreateAppointmentRequest {
     private Long patientId;
+    private Long hospitalId;
     private Long doctorId;
     private Date appointmentDate;
+    private String status;
+    private Date createdAt;
 }

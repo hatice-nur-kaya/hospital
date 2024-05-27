@@ -3,6 +3,7 @@ package com.kodhnk.base.dto.patients;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -12,8 +13,7 @@ public class CreatePatientRequest {
     private String lastname;
     private String username;
     private String email;
-    private Date birthDate;
+    private LocalDate birthDate;
     private String password;
     private String phone;
-    private Long hospitalId;
 }
