@@ -11,7 +11,6 @@ public class CreateAppointmentRequest {
     private Long patientId;
     private Long hospitalId;
     private Long doctorId;
+    private Long departmentId;
     private Date appointmentDate;
-    private String status;
-    private Date createdAt;
 }
