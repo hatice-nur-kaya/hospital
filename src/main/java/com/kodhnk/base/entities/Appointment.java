@@ -49,16 +49,4 @@ public class Appointment {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at", nullable = false)
     private Date updatedAt;
-
-    @PrePersist
-    public void prePersist() {
-        Date now = new Date();
-        this.createdAt = now;
-        this.updatedAt = now;  // Ensure updatedAt is not null upon creation
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = new Date();  // Update updatedAt every time the entity is updated
-    }
 }
