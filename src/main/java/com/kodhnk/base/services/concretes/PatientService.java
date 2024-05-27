@@ -11,7 +11,6 @@ import com.kodhnk.base.entities.UserType;
 import com.kodhnk.base.services.interfaces.IHospitalService;
 import com.kodhnk.base.services.interfaces.IPatientService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+
 
 @Service
 public class PatientService implements IPatientService {
@@ -56,6 +55,11 @@ public class PatientService implements IPatientService {
 
     @Override
     public DataResult<Patient> createPatient(CreatePatientRequest request) {
+        // E-posta adresini kontrol edin
+        if (patientRepository.findByEmail(request.getEmail()).isPresent()) {
+            return new ErrorDataResult<>(Response.EMAIL_ALREADY_EXISTS.getMessage(), null, 409);
+        }
+
         Patient patient = new Patient();
         patient.setFirstname(request.getFirstname());
         patient.setLastname(request.getLastname());
