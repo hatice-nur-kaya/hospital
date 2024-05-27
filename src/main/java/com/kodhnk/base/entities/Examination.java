@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ import java.util.Date;
 @Table(name = "examinations")
 public class Examination {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // AUTO yerine IDENTITY kullanmanız daha uygun olabilir.
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne
@@ -31,4 +32,11 @@ public class Examination {
     private String diagnosis;
     private String treatment;
     private String notes;
+    @ManyToMany
+    @JoinTable(
+            name = "examination_medicines",
+            joinColumns = @JoinColumn(name = "examination_id"),
+            inverseJoinColumns = @JoinColumn(name = "medicine_id")
+    )
+    private List<Medicine> prescribedMedicines;
 }

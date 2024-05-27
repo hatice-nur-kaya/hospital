@@ -61,7 +61,16 @@ public enum Response {
     INVALID_PATIENT_OR_DOCTOR("Doktor veya Hasta Bulunamadı."),
     APPOINTMENT_DELETE("Randevu Silindi."),
     APPOINTMENT_UPDATE("Randevu Güncellendi."),
-    INVALID_SELECTION("Geçersiz Seçim");
+    INVALID_SELECTION("Geçersiz Seçim"),
+    CREATE_EXAMINATION("Muayene Eklendi."),
+    CREATE_MEDICINE("İlaç Eklendi."),
+    UPDATE_MEDICINE("İlaç Güncellendi."),
+    DELETE_MEDICINE("İlaç Silindi."),
+    GET_MEDICINE("İlaç Getirildi."),
+    GET_ALL_MEDICINE("Tüm İlaçlar Listelendi."),
+    GET_ALL_APPOINTMENT("Tüm Randevular Listelendi."),
+
+    ;
 
     private final String message;
 

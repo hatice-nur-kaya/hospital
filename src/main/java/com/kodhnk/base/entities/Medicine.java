@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,4 +21,6 @@ public class Medicine {
     private String medicineName;
     private String dosage;
     private String instructions;
+    @ManyToMany(mappedBy = "prescribedMedicines")
+    private List<Examination> examinations;
 }
