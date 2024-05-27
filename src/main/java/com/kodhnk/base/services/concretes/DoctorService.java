@@ -72,6 +72,7 @@ public class DoctorService implements IDoctorService {
         doctor.setDepartment(departmentDataResult.getData());
         doctor.setFirstname(request.getFirstname());
         doctor.setLastname(request.getLastname());
+        doctor.setUserType(UserType.DOCTOR);
         doctor.setEmail(request.getEmail());
         doctor.setPassword(passwordEncoder.encode(request.getPassword()));
         doctorRepository.save(doctor);

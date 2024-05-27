@@ -7,6 +7,7 @@ import com.kodhnk.base.dto.patients.CreatePatientRequest;
 import com.kodhnk.base.dto.patients.UpdatePatientRequest;
 import com.kodhnk.base.entities.Hospital;
 import com.kodhnk.base.entities.Patient;
+import com.kodhnk.base.entities.UserType;
 import com.kodhnk.base.services.interfaces.IHospitalService;
 import com.kodhnk.base.services.interfaces.IPatientService;
 import org.springframework.beans.BeanUtils;
@@ -63,9 +64,11 @@ public class PatientService implements IPatientService {
         patient.setUsername(request.getUsername());
         patient.setPassword(passwordEncoder.encode(request.getPassword()));
         patient.setBirthDate(request.getBirthDate());
+        patient.setUserType(UserType.PATIENT);
         patientRepository.save(patient);
         return new SuccessDataResult<>(Response.CREATE_PATIENT.getMessage(), patient, 201);
     }
+
 
     @Override
     public DataResult<Patient> updatePatient(UpdatePatientRequest request) {
