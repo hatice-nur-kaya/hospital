@@ -81,7 +81,15 @@ public class PatientService implements IPatientService {
             return new ErrorDataResult<>(Response.PATIENT_NOT_FOUND.getMessage(), null, 400);
         }
         Patient patient = patientDataResult.getData();
-        BeanUtils.copyProperties(request, patient);
+        patient.setFirstname(request.getFirstname());
+        patient.setLastname(request.getLastname());
+        patient.setEmail(request.getEmail());
+        patient.setPhone(request.getPhone());
+        patient.setUsername(request.getUsername());
+        patient.setPassword(passwordEncoder.encode(request.getPassword()));
+        patient.setBirthDate(request.getBirthDate());
+        patient.setUserType(UserType.PATIENT);
+        patientRepository.save(patient);
         patientRepository.save(patient);
         return new SuccessDataResult<>(Response.UPDATE_PATIENT.getMessage(), patient, 200);
     }
