@@ -93,7 +93,6 @@ public class DoctorService implements IDoctorService {
         doctorRepository.save(doctor);
         return new SuccessDataResult<>(Response.UPDATE_DOCTOR.getMessage(), doctor, 200);
     }
-
     @Override
     public Result deleteDoctor(Long id) {
         DataResult<Doctor> doctorDataResult = getDoctorById(id);
