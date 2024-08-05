@@ -8,6 +8,7 @@ import com.kodhnk.base.dto.hospitals.UpdateHospitalRequest;
 import com.kodhnk.base.entities.Hospital;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IHospitalService {
     DataResult<List<Hospital>> getAllHosptial();
@@ -18,7 +19,7 @@ public interface IHospitalService {
 
     Result deleteHospital(Long id);
 
-    DataResult<Hospital> getById(Long id);
+    Optional<Hospital> getById(Long id);
 
     Result addDoctorToHospital(AddDoctorToHospitalRequest request);
 }

@@ -63,7 +63,7 @@ public class HospitalService implements IHospitalService {
     }
 
     @Override
-    public DataResult<Hospital> getById(Long id) {
+    public Optional<Hospital> getById(Long id) {
         Optional<Hospital> hospital = hospitalRepository.findById(id);
         if (hospital.isPresent()) {
             return new SuccessDataResult<>(Response.HOSPITAL_BY_ID.getMessage(), hospital.get(), 200);

@@ -99,11 +99,11 @@ public class PatientService implements IPatientService {
 
         Set<Hospital> hospitals = new HashSet<>();
         for (Long hospitalId : request.getHospitalIds()) {
-            DataResult<Hospital> hospitalOptional = hospitalService.getById(hospitalId);
-            if (!hospitalOptional.isSuccess()) {
+            Optional<Hospital> hospitalOptional = hospitalService.getById(hospitalId);
+            if (!hospitalOptional.isPresent()) {
                 return new ErrorDataResult<>(Response.HOSPITAL_NOT_FOUND.getMessage(), null, 400);
             }
-            hospitals.add(hospitalOptional.getData());
+            hospitals.add(hospitalOptional.get());
         }
         patient.setHospitals(hospitals);
 

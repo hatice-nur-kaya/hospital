@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -17,4 +18,5 @@ public class CreatePatientRequest {
     private String password;
     private String phone;
     private Long userId;
+    private Set<Long> hospitalIds;
 }
