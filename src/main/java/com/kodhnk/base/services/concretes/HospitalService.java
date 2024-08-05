@@ -63,7 +63,7 @@ public class HospitalService implements IHospitalService {
     }
 
     @Override
-    public Optional<Hospital> getById(Long id) {
+    public DataResult<Hospital> getById(Long id) {
         Optional<Hospital> hospital = hospitalRepository.findById(id);
         if (hospital.isPresent()) {
             return new SuccessDataResult<>(Response.HOSPITAL_BY_ID.getMessage(), hospital.get(), 200);
@@ -80,7 +80,8 @@ public class HospitalService implements IHospitalService {
         if (hospitalOpt.isPresent() && doctorOpt.isPresent()) {
             Hospital hospital = hospitalOpt.get();
             Doctor doctor = doctorOpt.get();
-            hospital.getDoctors().add(doctor);
+            doctor.setHospital(hospital);
+            doctorRepository.save(doctor);
             hospitalRepository.save(hospital);
             return new SuccessResult(Response.SUCCESS.getMessage(), 200);
         } else {

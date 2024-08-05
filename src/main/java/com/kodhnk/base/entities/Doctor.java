@@ -9,21 +9,22 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Table(name = "doctors")
 public class Doctor {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private String firstname;
+    private String lastname;
+    private String username;
+    private String email;
+    private String password;
+    private String specialty;
 
     @ManyToOne
     @JoinColumn(name = "hospital_id")

@@ -76,7 +76,8 @@ public enum Response {
     ROLE_CREATED("Rol Eklendi."),
     ROLE_UPDATED("Rol Güncellendi."),
     ROLE_DELETED("Rol Silindi."),
-    ROLE_FOUND("Rol Getirildi."),;
+    ROLE_FOUND("Rol Getirildi."),
+    GET_DOCTORS("Doktorlar Listelendi."),;
 
     private final String message;
 

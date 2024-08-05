@@ -35,7 +35,7 @@ public class PatientService implements IPatientService {
 
     @Override
     public DataResult<Set<Patient>> getAllPatients(Long hospitalId) {
-        List<Patient> patients = patientRepository.findAllByHospitalId(hospitalId);
+        List<Patient> patients = patientRepository.findAllByHospitals_Id(hospitalId);
         Set<Patient> patientSet = new HashSet<>(patients);
         return new SuccessDataResult<>(Response.GET_PATIENT.getMessage(), patientSet, 200);
     }
@@ -70,11 +70,11 @@ public class PatientService implements IPatientService {
 
         Set<Hospital> hospitals = new HashSet<>();
         for (Long hospitalId : request.getHospitalIds()) {
-            Optional<Hospital> hospitalOptional = hospitalService.getById(hospitalId);
-            if (!hospitalOptional.isPresent()) {
+            DataResult<Hospital> hospitalOptional = hospitalService.getById(hospitalId);
+            if (!hospitalOptional.isSuccess()) {
                 return new ErrorDataResult<>(Response.HOSPITAL_NOT_FOUND.getMessage(), null, 400);
             }
-            hospitals.add(hospitalOptional.get());
+            hospitals.add(hospitalOptional.getData());
         }
         patient.setHospitals(hospitals);
 
@@ -99,11 +99,13 @@ public class PatientService implements IPatientService {
 
         Set<Hospital> hospitals = new HashSet<>();
         for (Long hospitalId : request.getHospitalIds()) {
-            Optional<Hospital> hospitalOptional = hospitalService.getById(hospitalId);
-            if (!hospitalOptional.isPresent()) {
+            DataResult<Hospital> hospitalOptional = hospitalService.getById(hospitalId);
+            if (!hospitalOptional.isSuccess()) {
                 return new ErrorDataResult<>(Response.HOSPITAL_NOT_FOUND.getMessage(), null, 400);
             }
-            hospitals.add(hospitalOptional.get());
+            if (!hospitals.contains(hospitalOptional.getData())) {
+                hospitals.add(hospitalOptional.getData());
+            }
         }
         patient.setHospitals(hospitals);
 

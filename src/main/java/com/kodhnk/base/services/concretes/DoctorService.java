@@ -40,13 +40,11 @@ public class DoctorService implements IDoctorService {
     @Override
     public DataResult<Set<Doctor>> getDoctorsByHospital(Long hospitalId) {
         DataResult<Hospital> hospitalResult = hospitalService.getById(hospitalId);
-        if (hospitalResult.isSuccess()) {
-            Hospital hospital = hospitalResult.getData();
-            Set<Doctor> doctors = hospital.getDoctors().stream().collect(Collectors.toSet());
-            return new SuccessDataResult<>(Response.GET_DOCTOR.getMessage(), doctors, 200);
-        } else {
+        if (!hospitalResult.isSuccess()) {
             return new ErrorDataResult<>(Response.HOSPITAL_NOT_FOUND.getMessage(), null, 400);
         }
+        Set<Doctor> doctors = doctorRepository.findAllByHospital(hospitalResult.getData());
+        return new SuccessDataResult<>(Response.GET_DOCTORS.getMessage(), doctors, 200);
     }
 
     @Override
@@ -65,17 +63,12 @@ public class DoctorService implements IDoctorService {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             return new ErrorDataResult<>(Response.EMAIL_ALREADY_EXISTS.getMessage(), null, 409);
         }
-        User user = new User();
-        user.setFirstname(request.getFirstname());
-        user.setLastname(request.getLastname());
-        user.setEmail(request.getEmail());
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        userRepository.save(user);
-
-        // Doktor oluştur ve kullanıcıya bağla
         Doctor doctor = new Doctor();
-        doctor.setUser(user);
+        doctor.setFirstname(request.getFirstname());
+        doctor.setLastname(request.getLastname());
+        doctor.setEmail(request.getEmail());
+        doctor.setUsername(request.getUsername());
+        doctor.setPassword(passwordEncoder.encode(request.getPassword()));
 
         DataResult<Hospital> hospitalDataResult = hospitalService.getById(request.getHospitalId());
         if (!hospitalDataResult.isSuccess()) {
@@ -100,14 +93,12 @@ public class DoctorService implements IDoctorService {
             return new ErrorDataResult<>(Response.DOCTOR_NOT_FOUND.getMessage(), null, 400);
         }
         Doctor doctor = doctorDataResult.getData();
-        User user = doctor.getUser();
 
-        user.setFirstname(request.getFirstname());
-        user.setLastname(request.getLastname());
-        user.setEmail(request.getEmail());
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        userRepository.save(user);
+        doctor.setFirstname(request.getFirstname());
+        doctor.setLastname(request.getLastname());
+        doctor.setEmail(request.getEmail());
+        doctor.setUsername(request.getUsername());
+        doctor.setPassword(passwordEncoder.encode(request.getPassword()));
 
         doctorRepository.save(doctor);
         return new SuccessDataResult<>(Response.UPDATE_DOCTOR.getMessage(), doctor, 200);
@@ -121,7 +112,6 @@ public class DoctorService implements IDoctorService {
         }
         Doctor doctor = doctorDataResult.getData();
         doctorRepository.delete(doctor);
-        userRepository.delete(doctor.getUser());
         return new SuccessResult(Response.DELETE_DOCTOR.getMessage(), 200);
     }
 }
