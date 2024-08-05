@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PatientRepository extends JpaRepository<Patient, Long> {
-    List<Patient> findAllById(Long hospitalId);
-
-    List<Patient> findAllByHospital(Hospital data);
-
-    Optional<Object> findByEmail(String email);
+    List<Patient> findAllByHospitalId(Long hospitalId);
+    Optional<Patient> findByEmail(String email);
 }

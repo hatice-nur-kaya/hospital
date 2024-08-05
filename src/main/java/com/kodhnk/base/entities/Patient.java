@@ -11,23 +11,34 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "patients")
-public class Patient extends User {
+public class Patient {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private String phone;
     private LocalDate birthDate;
 
-    @ManyToOne
-    @JoinColumn(name = "hospital_id")
+    @ManyToMany
+    @JoinTable(
+            name = "patient_hospitals",
+            joinColumns = @JoinColumn(name = "patient_id"),
+            inverseJoinColumns = @JoinColumn(name = "hospital_id")
+    )
     @JsonIgnore
-    private Hospital hospital;
+    private Set<Hospital> hospitals;
 
     @OneToMany(mappedBy = "patient")
     @JsonIgnore

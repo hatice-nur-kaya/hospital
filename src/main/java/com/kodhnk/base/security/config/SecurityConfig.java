@@ -42,6 +42,7 @@ public class SecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/roles/createRole").permitAll()
                         .requestMatchers("/api/v1/patients/**").permitAll()
                         .anyRequest().authenticated());
 

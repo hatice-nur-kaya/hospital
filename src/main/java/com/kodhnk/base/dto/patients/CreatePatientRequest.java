@@ -16,4 +16,5 @@ public class CreatePatientRequest {
     private LocalDate birthDate;
     private String password;
     private String phone;
+    private Long userId;
 }

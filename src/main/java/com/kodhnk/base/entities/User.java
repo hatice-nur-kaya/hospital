@@ -26,9 +26,14 @@ public class User implements UserDetails {
     private String username;
     private String email;
     private String password;
-    @Enumerated(EnumType.STRING)
-    private UserType userType;
 
+    @ManyToMany
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Collection<Role> roles;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

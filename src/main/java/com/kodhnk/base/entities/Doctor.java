@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -14,11 +15,15 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "doctors")
-public class Doctor extends User {
+public class Doctor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String specialty;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "hospital_id")
