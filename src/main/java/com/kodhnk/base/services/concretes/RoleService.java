@@ -2,6 +2,7 @@ package com.kodhnk.base.services.concretes;
 
 import com.kodhnk.base.core.constant.Response;
 import com.kodhnk.base.core.utilities.DataResult;
+import com.kodhnk.base.core.utilities.ErrorDataResult;
 import com.kodhnk.base.core.utilities.SuccessDataResult;
 import com.kodhnk.base.dataAccess.RoleRepository;
 import com.kodhnk.base.dto.roles.request.CreateRoleRequest;
@@ -11,6 +12,7 @@ import com.kodhnk.base.services.interfaces.IRoleService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RoleService implements IRoleService {
@@ -39,7 +41,10 @@ public class RoleService implements IRoleService {
     @Override
     public DataResult<Role> createRole(CreateRoleRequest request) {
         Role role = new Role();
-        role.setName(request.getName());
+        if (roleRepository.findByName(request.getName()).isPresent()) {
+            return new ErrorDataResult<>(Response.ROLE_ALREADY_EXISTS.getMessage(), null, 400);
+        }
+        role.setName(request.getName().toUpperCase());
         roleRepository.save(role);
         return new SuccessDataResult<>(Response.ROLE_CREATED.getMessage(), role, 201);
     }
@@ -62,5 +67,14 @@ public class RoleService implements IRoleService {
         }
         roleRepository.deleteById(id);
         return new SuccessDataResult<>(Response.ROLE_DELETED.getMessage(), null, 200);
+    }
+
+    @Override
+    public DataResult<Role> getRoleByName(String name) {
+        Optional<Role> role = roleRepository.findByName(name);
+        if (role.isEmpty()) {
+            return new ErrorDataResult<>(Response.ROLE_NOT_FOUND.getMessage(), null, 404);
+        }
+        return new SuccessDataResult<>(Response.ROLE_FOUND.getMessage(), role.get(), 200);
     }
 }

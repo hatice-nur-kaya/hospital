@@ -30,6 +30,8 @@ public class Patient {
 
     private String phone;
     private LocalDate birthDate;
+    private String gender;
+
 
     @ManyToMany
     @JoinTable(

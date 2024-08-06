@@ -1,6 +1,7 @@
 package com.kodhnk.base.services.concretes;
 
 import com.kodhnk.base.entities.Hospital;
+import com.kodhnk.base.entities.Role;
 import com.kodhnk.base.services.interfaces.IPatientService;
 import com.kodhnk.base.core.constant.Response;
 import com.kodhnk.base.core.utilities.*;
@@ -11,6 +12,7 @@ import com.kodhnk.base.dto.patients.UpdatePatientRequest;
 import com.kodhnk.base.entities.Patient;
 import com.kodhnk.base.entities.User;
 import com.kodhnk.base.services.interfaces.IHospitalService;
+import com.kodhnk.base.services.interfaces.IRoleService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +27,13 @@ public class PatientService implements IPatientService {
     private final UserRepository userRepository;
     private final IHospitalService hospitalService;
     private final BCryptPasswordEncoder passwordEncoder;
-
-    public PatientService(PatientRepository patientRepository, UserRepository userRepository, IHospitalService hospitalService, BCryptPasswordEncoder passwordEncoder) {
+    private final IRoleService roleService;
+    public PatientService(PatientRepository patientRepository, UserRepository userRepository, IHospitalService hospitalService, BCryptPasswordEncoder passwordEncoder, IRoleService roleService) {
         this.patientRepository = patientRepository;
         this.userRepository = userRepository;
         this.hospitalService = hospitalService;
         this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
     }
 
     @Override
@@ -56,22 +59,32 @@ public class PatientService implements IPatientService {
             return new ErrorDataResult<>(Response.EMAIL_ALREADY_EXISTS.getMessage(), null, 409);
         }
 
-        // Yeni kullanıcı oluştur
         User user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .username(request.getUsername())
                 .email(request.getEmail())
-                .password(request.getPassword()) // Parolayı doğru şekilde hashlemeyi unutmayın
+                .password(passwordEncoder.encode(request.getPassword()))
                 .build();
+
+        Set<Role> roles = new HashSet<>();
+        for (Long roleId : request.getRoleIds()) {
+            DataResult<Role> roleDataResult = roleService.getRoleById(roleId);
+            if (!roleDataResult.isSuccess()) {
+                return new ErrorDataResult<>(Response.ROLE_NOT_FOUND.getMessage(), null, 400);
+            }
+            Role role = roleDataResult.getData();
+            roles.add(role);
+        }
+        user.setRoles(roles);
 
         // Kullanıcıyı kaydet
         userRepository.save(user);
 
         // Yeni hasta oluştur
         Patient patient = new Patient();
-        patient.setUser(user);
         patient.setPhone(request.getPhone());
+        patient.setGender(request.getGender());
         patient.setBirthDate(request.getBirthDate());
 
         // Hastaneleri ekle
@@ -87,6 +100,7 @@ public class PatientService implements IPatientService {
 
         // Hastayı kaydet
         patientRepository.save(patient);
+
         return new SuccessDataResult<>(Response.CREATE_PATIENT.getMessage(), patient, 200);
     }
 
@@ -97,9 +111,6 @@ public class PatientService implements IPatientService {
             return new ErrorDataResult<>(Response.PATIENT_NOT_FOUND.getMessage(), null, 400);
         }
         Patient patient = patientDataResult.getData();
-        User user = patient.getUser();
-        userRepository.save(user);
-
         Set<Hospital> hospitals = new HashSet<>();
         for (Long hospitalId : request.getHospitalIds()) {
             DataResult<Hospital> hospitalOptional = hospitalService.getById(hospitalId);
@@ -126,7 +137,6 @@ public class PatientService implements IPatientService {
         }
         Patient patient = patientDataResult.getData();
         patientRepository.delete(patient);
-        userRepository.delete(patient.getUser());
 
         return new SuccessDataResult<>(Response.DELETE_PATIENT.getMessage(), patient, 200);
     }

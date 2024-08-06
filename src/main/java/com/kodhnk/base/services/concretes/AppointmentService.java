@@ -49,35 +49,23 @@ public class AppointmentService implements IAppointmentService {
 
     @Override
     public DataResult<Appointment> createAppointment(CreateAppointmentRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = null;
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            currentUsername = userDetails.getUsername();
-        }
         Optional<Patient> patient = patientRepository.findById(request.getPatientId());
+        if (!patient.isPresent()) {
+            return new ErrorDataResult<>(Response.PATIENT_NOT_FOUND.getMessage(), null, 400);
+        }
         Optional<Doctor> doctor = doctorRepository.findById(request.getDoctorId());
-        Optional<Hospital> hospital = hospitalRepository.findById(request.getHospitalId());
-        Optional<Department> department = departmentRepository.findById(request.getDepartmentId());
-        if (!patient.isPresent() || !doctor.isPresent() || !hospital.isPresent() || !department.isPresent()) {
-            return new ErrorDataResult<>(Response.INVALID_SELECTION.getMessage(), null, 400);
+        if (!doctor.isPresent()) {
+            return new ErrorDataResult<>(Response.DOCTOR_NOT_FOUND.getMessage(), null, 400);
         }
-        if (!doctor.get().getDepartment().equals(department.get())) {
-            return new ErrorDataResult<>("Doctor does not belong to the specified department.", null, 400);
-        }
-        Appointment newAppointment = new Appointment();
-        newAppointment.setPatient(patient.get());
-        newAppointment.setDoctor(doctor.get());
-        newAppointment.setHospital(hospital.get());
-        newAppointment.setDepartment(department.get());
-        newAppointment.setAppointmentDate(request.getAppointmentDate());
-        newAppointment.setCreatedAt(new Date());
-        newAppointment.setStatus(AppointmentStatus.PLANNED);
-        Appointment savedAppointment = appointmentRepository.save(newAppointment);
-        return new SuccessDataResult<>(Response.CREATE_APPOINTMENT.getMessage(), savedAppointment, 201);
+        Appointment appointment = new Appointment();
+        appointment.setPatient(patient.get());
+        appointment.setDoctor(doctor.get());
+        appointment.setAppointmentDate(request.getAppointmentDate());
+        appointment.setStatus(AppointmentStatus.PENDING);
+        appointmentRepository.save(appointment);
+
+        return new SuccessDataResult<>(Response.CREATE_APPOINTMENT.getMessage(), appointment, 200);
     }
-
-
 
     @Override
     public Result updateAppointment(UpdateAppointmentRequest request) {

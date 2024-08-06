@@ -83,7 +83,10 @@ public enum Response {
     REQUEST_IS_NULL("İstek Boş."),
     CREATE_ADDRESS("Adres Eklendi."),
     UPDATE_ADDRESS("Adres Güncellendi."),
-    DELETE_ADDRESS("Adres Silindi."),;
+    DELETE_ADDRESS("Adres Silindi."),
+    ROLE_ALREADY_EXISTS("Rol Zaten Mevcut."),
+    CITY_IS_NULL("İl Alanı Boş."),
+    DISTRICT_IS_NULL("İlçe Alanı Boş."),;
 
     private final String message;
 

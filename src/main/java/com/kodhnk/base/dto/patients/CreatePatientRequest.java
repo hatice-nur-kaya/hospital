@@ -17,6 +17,7 @@ public class CreatePatientRequest {
     private LocalDate birthDate;
     private String password;
     private String phone;
-    private Long userId;
+    private String gender;
     private Set<Long> hospitalIds;
+    private Set<Long> roleIds;
 }

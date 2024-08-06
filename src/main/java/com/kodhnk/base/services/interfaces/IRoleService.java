@@ -17,4 +17,6 @@ public interface IRoleService {
     DataResult<Role> updateRole(UpdateRoleRequest request);
 
     DataResult<Role> deleteRole(Long id);
+
+    DataResult<Role> getRoleByName(String name);
 }

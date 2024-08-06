@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,12 +24,15 @@ public class DoctorService implements IDoctorService {
     private final UserRepository userRepository;
     private final IHospitalService hospitalService;
     private final IDepartmentService departmentService;
-
-    public DoctorService(DoctorRepository doctorRepository, UserRepository userRepository, IHospitalService hospitalService, IDepartmentService departmentService) {
+    private final IRoleService roleService;
+    private final BCryptPasswordEncoder passwordEncoder;
+    public DoctorService(DoctorRepository doctorRepository, UserRepository userRepository, IHospitalService hospitalService, IDepartmentService departmentService, IRoleService roleService, BCryptPasswordEncoder passwordEncoder) {
         this.doctorRepository = doctorRepository;
         this.userRepository = userRepository;
         this.hospitalService = hospitalService;
         this.departmentService = departmentService;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -53,33 +57,57 @@ public class DoctorService implements IDoctorService {
 
     @Override
     public Result createHospitalDoctor(CreateDoctorRequest request) {
+        // Check if email already exists
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             return new ErrorDataResult<>(Response.EMAIL_ALREADY_EXISTS.getMessage(), null, 409);
         }
+
+        // Create the User entity
         User user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .username(request.getUsername())
                 .email(request.getEmail())
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
+        // Fetch and set roles for the User
+        Set<Role> roles = new HashSet<>();
+        for (Long roleId : request.getRoleIds()) {
+            DataResult<Role> roleDataResult = roleService.getRoleById(roleId);
+            if (!roleDataResult.isSuccess()) {
+                return new ErrorDataResult<>(Response.ROLE_NOT_FOUND.getMessage(), null, 400);
+            }
+            Role role = roleDataResult.getData();
+            roles.add(role);
+        }
+        user.setRoles(roles);
+
+        // Save the User entity
         userRepository.save(user);
+
+        // Create the Doctor entity and set the User
         Doctor doctor = new Doctor();
         doctor.setSpecialty(request.getSpeciality());
+        doctor.setUser(user); // Setting the user
+
+        // Fetch and set the Hospital
         DataResult<Hospital> hospitalDataResult = hospitalService.getById(request.getHospitalId());
         if (!hospitalDataResult.isSuccess()) {
             return new ErrorDataResult<>(Response.HOSPITAL_NOT_FOUND.getMessage(), null, 400);
         }
         doctor.setHospital(hospitalDataResult.getData());
 
+        // Fetch and set the Department
         DataResult<Department> departmentDataResult = departmentService.getDepartmentById(request.getDepartmentId());
         if (!departmentDataResult.isSuccess()) {
             return new ErrorDataResult<>(Response.DEPARTMENT_NOT_FOUND.getMessage(), null, 400);
         }
         doctor.setDepartment(departmentDataResult.getData());
-        doctor.setUser(user);
+
+        // Save the Doctor entity
         doctorRepository.save(doctor);
+
         return new SuccessDataResult<>(Response.CREATE_DOCTOR.getMessage(), doctor, 201);
     }
 
@@ -91,6 +119,7 @@ public class DoctorService implements IDoctorService {
             return new ErrorDataResult<>(Response.DOCTOR_NOT_FOUND.getMessage(), null, 400);
         }
         Doctor doctor = doctorDataResult.getData();
+
         doctorRepository.save(doctor);
         return new SuccessDataResult<>(Response.UPDATE_DOCTOR.getMessage(), doctor, 200);
     }

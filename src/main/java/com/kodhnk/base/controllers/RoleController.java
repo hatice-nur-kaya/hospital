@@ -31,6 +31,12 @@ public class RoleController {
         return ResponseEntity.status(result.getStatusCode()).body(result);
     }
 
+    @GetMapping("/getRoleByName")
+    ResponseEntity<DataResult<Role>> getRoleByName(@RequestParam String name) {
+        DataResult<Role> result = roleService.getRoleByName(name);
+        return ResponseEntity.status(result.getStatusCode()).body(result);
+    }
+
     @PostMapping("/createRole")
     ResponseEntity<DataResult<Role>> createRole(@RequestBody CreateRoleRequest request) {
         DataResult<Role> result = roleService.createRole(request);

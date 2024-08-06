@@ -37,18 +37,6 @@ public class AddressService implements IAddressService {
     }
 
     @Override
-    public DataResult<Address> createAddress(CreateAddressRequest request) {
-        if (request == null) {
-            return new ErrorDataResult<>(Response.REQUEST_IS_NULL.getMessage(), null, 400);
-        }
-        Address address = new Address();
-        address.setCity(request.getCity());
-        address.setDistrict(request.getDistrict());
-        addressRepository.save(address);
-        return new SuccessDataResult<>(Response.CREATE_ADDRESS.getMessage(), address, 200);
-    }
-
-    @Override
     public DataResult<Address> updateAddress(UpdateAddressRequest request) {
         if (request == null) {
             return new ErrorDataResult<>(Response.REQUEST_IS_NULL.getMessage(), null, 400);
@@ -71,5 +59,17 @@ public class AddressService implements IAddressService {
         }
         addressRepository.delete(address);
         return new SuccessDataResult<>(Response.DELETE_ADDRESS.getMessage(), address, 200);
+    }
+
+    @Override
+    public DataResult<Address> createAddress(CreateAddressRequest request) {
+        if (request == null) {
+            return new ErrorDataResult<>(Response.REQUEST_IS_NULL.getMessage(), null, 400);
+        }
+        Address address = new Address();
+        address.setCity(request.getCity());
+        address.setDistrict(request.getDistrict());
+        addressRepository.save(address);
+        return new SuccessDataResult<>(Response.CREATE_ADDRESS.getMessage(), address, 201);
     }
 }

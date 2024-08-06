@@ -11,10 +11,10 @@ public interface IAddressService {
     DataResult<List<Address>> getAllAddresses();
 
     DataResult<Address> getAddressById(Long id);
-
-    DataResult<Address> createAddress(CreateAddressRequest request);
-
+    
     DataResult<Address> updateAddress(UpdateAddressRequest request);
 
     DataResult<Address> deleteAddress(Long id);
+
+    DataResult<Address> createAddress(CreateAddressRequest request);
 }
