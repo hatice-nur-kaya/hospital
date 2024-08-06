@@ -77,7 +77,13 @@ public enum Response {
     ROLE_UPDATED("Rol Güncellendi."),
     ROLE_DELETED("Rol Silindi."),
     ROLE_FOUND("Rol Getirildi."),
-    GET_DOCTORS("Doktorlar Listelendi."),;
+    GET_DOCTORS("Doktorlar Listelendi."),
+    GET_ADDRESS("Adresler Listelendi."),
+    ADDRESS_NOT_FOUND("Adres Bulunamadı."),
+    REQUEST_IS_NULL("İstek Boş."),
+    CREATE_ADDRESS("Adres Eklendi."),
+    UPDATE_ADDRESS("Adres Güncellendi."),
+    DELETE_ADDRESS("Adres Silindi."),;
 
     private final String message;
 

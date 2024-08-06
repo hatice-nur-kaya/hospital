@@ -55,19 +55,26 @@ public class PatientService implements IPatientService {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             return new ErrorDataResult<>(Response.EMAIL_ALREADY_EXISTS.getMessage(), null, 409);
         }
-        User user = new User();
-        user.setFirstname(request.getFirstname());
-        user.setLastname(request.getLastname());
-        user.setEmail(request.getEmail());
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        // Yeni kullanıcı oluştur
+        User user = User.builder()
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(request.getPassword()) // Parolayı doğru şekilde hashlemeyi unutmayın
+                .build();
+
+        // Kullanıcıyı kaydet
         userRepository.save(user);
 
+        // Yeni hasta oluştur
         Patient patient = new Patient();
         patient.setUser(user);
         patient.setPhone(request.getPhone());
         patient.setBirthDate(request.getBirthDate());
 
+        // Hastaneleri ekle
         Set<Hospital> hospitals = new HashSet<>();
         for (Long hospitalId : request.getHospitalIds()) {
             DataResult<Hospital> hospitalOptional = hospitalService.getById(hospitalId);
@@ -78,6 +85,7 @@ public class PatientService implements IPatientService {
         }
         patient.setHospitals(hospitals);
 
+        // Hastayı kaydet
         patientRepository.save(patient);
         return new SuccessDataResult<>(Response.CREATE_PATIENT.getMessage(), patient, 200);
     }
@@ -90,11 +98,6 @@ public class PatientService implements IPatientService {
         }
         Patient patient = patientDataResult.getData();
         User user = patient.getUser();
-        user.setFirstname(request.getFirstname());
-        user.setLastname(request.getLastname());
-        user.setEmail(request.getEmail());
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
 
         Set<Hospital> hospitals = new HashSet<>();

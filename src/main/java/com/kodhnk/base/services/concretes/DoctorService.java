@@ -23,18 +23,12 @@ public class DoctorService implements IDoctorService {
     private final UserRepository userRepository;
     private final IHospitalService hospitalService;
     private final IDepartmentService departmentService;
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final IExaminationService examinationService;
-    private final IAppointmentService appointmentService;
 
-    public DoctorService(DoctorRepository doctorRepository, UserRepository userRepository, IHospitalService hospitalService, IDepartmentService departmentService, BCryptPasswordEncoder passwordEncoder, IExaminationService examinationService, IAppointmentService appointmentService) {
+    public DoctorService(DoctorRepository doctorRepository, UserRepository userRepository, IHospitalService hospitalService, IDepartmentService departmentService) {
         this.doctorRepository = doctorRepository;
         this.userRepository = userRepository;
         this.hospitalService = hospitalService;
         this.departmentService = departmentService;
-        this.passwordEncoder = passwordEncoder;
-        this.examinationService = examinationService;
-        this.appointmentService = appointmentService;
     }
 
     @Override
@@ -59,17 +53,20 @@ public class DoctorService implements IDoctorService {
 
     @Override
     public Result createHospitalDoctor(CreateDoctorRequest request) {
-        // Kullanıcı oluştur
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             return new ErrorDataResult<>(Response.EMAIL_ALREADY_EXISTS.getMessage(), null, 409);
         }
-        Doctor doctor = new Doctor();
-        doctor.setFirstname(request.getFirstname());
-        doctor.setLastname(request.getLastname());
-        doctor.setEmail(request.getEmail());
-        doctor.setUsername(request.getUsername());
-        doctor.setPassword(passwordEncoder.encode(request.getPassword()));
+        User user = User.builder()
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .build();
 
+        userRepository.save(user);
+        Doctor doctor = new Doctor();
+        doctor.setSpecialty(request.getSpeciality());
         DataResult<Hospital> hospitalDataResult = hospitalService.getById(request.getHospitalId());
         if (!hospitalDataResult.isSuccess()) {
             return new ErrorDataResult<>(Response.HOSPITAL_NOT_FOUND.getMessage(), null, 400);
@@ -81,10 +78,11 @@ public class DoctorService implements IDoctorService {
             return new ErrorDataResult<>(Response.DEPARTMENT_NOT_FOUND.getMessage(), null, 400);
         }
         doctor.setDepartment(departmentDataResult.getData());
-
+        doctor.setUser(user);
         doctorRepository.save(doctor);
         return new SuccessDataResult<>(Response.CREATE_DOCTOR.getMessage(), doctor, 201);
     }
+
 
     @Override
     public Result updateDoctor(UpdateDoctorRequest request) {
@@ -93,13 +91,6 @@ public class DoctorService implements IDoctorService {
             return new ErrorDataResult<>(Response.DOCTOR_NOT_FOUND.getMessage(), null, 400);
         }
         Doctor doctor = doctorDataResult.getData();
-
-        doctor.setFirstname(request.getFirstname());
-        doctor.setLastname(request.getLastname());
-        doctor.setEmail(request.getEmail());
-        doctor.setUsername(request.getUsername());
-        doctor.setPassword(passwordEncoder.encode(request.getPassword()));
-
         doctorRepository.save(doctor);
         return new SuccessDataResult<>(Response.UPDATE_DOCTOR.getMessage(), doctor, 200);
     }

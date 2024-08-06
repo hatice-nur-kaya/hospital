@@ -23,14 +23,9 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String firstname;
-    private String lastname;
-    private String username;
-    private String email;
-    private String password;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     private String phone;
@@ -61,4 +56,5 @@ public class Patient {
             inverseJoinColumns = @JoinColumn(name = "medicine_id")
     )
     private Set<Medicine> medicines;
+
 }

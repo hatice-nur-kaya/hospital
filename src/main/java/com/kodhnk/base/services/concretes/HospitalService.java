@@ -7,8 +7,10 @@ import com.kodhnk.base.dataAccess.HospitalRepository;
 import com.kodhnk.base.dto.hospitals.AddDoctorToHospitalRequest;
 import com.kodhnk.base.dto.hospitals.CreateHospitalRequest;
 import com.kodhnk.base.dto.hospitals.UpdateHospitalRequest;
+import com.kodhnk.base.entities.Address;
 import com.kodhnk.base.entities.Doctor;
 import com.kodhnk.base.entities.Hospital;
+import com.kodhnk.base.services.interfaces.IAddressService;
 import com.kodhnk.base.services.interfaces.IHospitalService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -20,10 +22,12 @@ import java.util.Optional;
 public class HospitalService implements IHospitalService {
     private final HospitalRepository hospitalRepository;
     private final DoctorRepository doctorRepository;
+    private final IAddressService addressService;
 
-    public HospitalService(HospitalRepository hospitalRepository, DoctorRepository doctorRepository) {
+    public HospitalService(HospitalRepository hospitalRepository, DoctorRepository doctorRepository, IAddressService addressService) {
         this.hospitalRepository = hospitalRepository;
         this.doctorRepository = doctorRepository;
+        this.addressService = addressService;
     }
 
     @Override
@@ -35,7 +39,12 @@ public class HospitalService implements IHospitalService {
     @Override
     public Result createHospital(CreateHospitalRequest request) {
         Hospital hospital = new Hospital();
+        DataResult<Address> addressResult = addressService.getAddressById(request.getAddressId());
+        if (!addressResult.isSuccess()) {
+            return new ErrorDataResult<>(Response.ADDRESS_NOT_FOUND.getMessage(), null, 400);
+        }
         BeanUtils.copyProperties(request, hospital);
+        hospital.setAddress(addressResult.getData());
         hospitalRepository.save(hospital);
         return new SuccessDataResult<>(Response.CREATE_HOSPITAL.getMessage(), hospital, 201);
     }
