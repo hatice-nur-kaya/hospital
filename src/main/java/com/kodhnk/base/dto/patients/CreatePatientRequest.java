@@ -20,4 +20,5 @@ public class CreatePatientRequest {
     private String gender;
     private Set<Long> hospitalIds;
     private Set<Long> roleIds;
+    private Set<Long> medicineIds;
 }
