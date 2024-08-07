@@ -25,13 +25,13 @@ public class Patient {
     private Long id;
 
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     private String phone;
     private LocalDate birthDate;
     private String gender;
-
 
     @ManyToMany
     @JoinTable(
@@ -42,11 +42,11 @@ public class Patient {
     @JsonIgnore
     private Set<Hospital> hospitals;
 
-    @OneToMany(mappedBy = "patient")
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Examination> examinations;
 
-    @OneToMany(mappedBy = "patient")
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Appointment> appointments;
 
@@ -58,5 +58,4 @@ public class Patient {
             inverseJoinColumns = @JoinColumn(name = "medicine_id")
     )
     private Set<Medicine> medicines;
-
 }

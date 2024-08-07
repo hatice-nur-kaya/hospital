@@ -34,7 +34,8 @@ public class AppointmentService implements IAppointmentService {
 
     @Override
     public DataResult<List<Appointment>> getAllAppointment() {
-        return null;
+        List<Appointment> appointments = appointmentRepository.findAll();
+        return new SuccessDataResult<>(Response.GET_APPOINTMENT.getMessage(), appointments, 200);
     }
 
     @Override
@@ -57,13 +58,17 @@ public class AppointmentService implements IAppointmentService {
         if (!doctor.isPresent()) {
             return new ErrorDataResult<>(Response.DOCTOR_NOT_FOUND.getMessage(), null, 400);
         }
+        Optional<Department> department = departmentRepository.findById(request.getDepartmentId());
+        if (!department.isPresent()) {
+            return new ErrorDataResult<>(Response.DEPARTMENT_NOT_FOUND.getMessage(), null, 400);
+        }
         Appointment appointment = new Appointment();
         appointment.setPatient(patient.get());
         appointment.setDoctor(doctor.get());
+        appointment.setDepartment(department.get());
         appointment.setAppointmentDate(request.getAppointmentDate());
         appointment.setStatus(AppointmentStatus.PENDING);
         appointmentRepository.save(appointment);
-
         return new SuccessDataResult<>(Response.CREATE_APPOINTMENT.getMessage(), appointment, 200);
     }
 

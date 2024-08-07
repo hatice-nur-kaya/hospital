@@ -1,5 +1,6 @@
 package com.kodhnk.base.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,9 +23,11 @@ public class Examination {
 
     @ManyToOne
     @JoinColumn(name = "patient_id")
+    @JsonIgnore
     private Patient patient;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
@@ -33,6 +36,7 @@ public class Examination {
     private String treatment;
     private String notes;
     @ManyToMany
+    @JsonIgnore
     @JoinTable(
             name = "examination_medicines",
             joinColumns = @JoinColumn(name = "examination_id"),
