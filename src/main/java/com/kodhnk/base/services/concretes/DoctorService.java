@@ -84,12 +84,12 @@ public class DoctorService implements IDoctorService {
         user.setRoles(roles);
 
         // Save the User entity
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
         // Create the Doctor entity and set the User
         Doctor doctor = new Doctor();
         doctor.setSpecialty(request.getSpeciality());
-        doctor.setUser(user); // Setting the user
+        doctor.setUser(savedUser);
 
         // Fetch and set the Hospital
         DataResult<Hospital> hospitalDataResult = hospitalService.getById(request.getHospitalId());
@@ -104,8 +104,6 @@ public class DoctorService implements IDoctorService {
             return new ErrorDataResult<>(Response.DEPARTMENT_NOT_FOUND.getMessage(), null, 400);
         }
         doctor.setDepartment(departmentDataResult.getData());
-
-        // Save the Doctor entity
         doctorRepository.save(doctor);
 
         return new SuccessDataResult<>(Response.CREATE_DOCTOR.getMessage(), doctor, 201);

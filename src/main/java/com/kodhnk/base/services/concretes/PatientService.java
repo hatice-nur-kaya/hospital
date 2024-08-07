@@ -79,14 +79,13 @@ public class PatientService implements IPatientService {
         user.setRoles(roles);
 
         // Kullanıcıyı kaydet
-        userRepository.save(user);
-
+        User savedUser = userRepository.save(user);
         // Yeni hasta oluştur
         Patient patient = new Patient();
         patient.setPhone(request.getPhone());
         patient.setGender(request.getGender());
         patient.setBirthDate(request.getBirthDate());
-
+        patient.setUser(savedUser);
         // Hastaneleri ekle
         Set<Hospital> hospitals = new HashSet<>();
         for (Long hospitalId : request.getHospitalIds()) {
